@@ -89,7 +89,7 @@ export default function FabricCanvas({
         } else if (element.type === 'image' && element.imageUrl) {
             fabric.Image.fromURL(
                 element.imageUrl,
-                (img) => {
+                (img: fabric.Image) => {
                     img.set({
                         left: element.x,
                         top: element.y,
