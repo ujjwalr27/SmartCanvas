@@ -34,6 +34,30 @@ Requirements:
 
 Return adapted layout as JSON with same schema as input.`;
 
+        // Check if Gemini is available
+        if (!geminiFlash) {
+            // Fallback: simple proportional scaling without AI
+            const adaptedElements = layout.elements.map((elem: any) => ({
+                ...elem,
+                x: Math.round(elem.x * scaleX),
+                y: Math.round(elem.y * scaleY),
+                width: Math.round(elem.width * scaleX),
+                height: Math.round(elem.height * scaleY),
+                fontSize: elem.fontSize ? Math.round(elem.fontSize * Math.min(scaleX, scaleY)) : undefined,
+            }));
+
+            return NextResponse.json({
+                layout: {
+                    ...layout,
+                    id: `layout-${Date.now()}`,
+                    name: `${layout.name} - ${targetSpec.name}`,
+                    width: targetSpec.width,
+                    height: targetSpec.height,
+                    elements: adaptedElements,
+                }
+            });
+        }
+
         const result = await geminiFlash.generateContent({
             contents: [{ role: 'user', parts: [{ text: prompt }] }],
             generationConfig: {

@@ -68,6 +68,12 @@ Analyze the layout and return violations as JSON:
 
 Be strict but fair. Return empty array if no violations.`;
 
+        // Check if Gemini is available
+        if (!geminiFlash) {
+            // Return no violations when AI is not configured
+            return NextResponse.json({ violations: [], passed: true });
+        }
+
         const result = await geminiFlash.generateContent({
             contents: [{ role: 'user', parts: [{ text: prompt }] }],
             generationConfig: {

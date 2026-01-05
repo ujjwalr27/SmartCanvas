@@ -58,6 +58,18 @@ Requirements:
 Return as JSON array of strings.`;
         }
 
+        // Check if Gemini is available
+        if (!geminiFlash) {
+            // Return demo suggestions when AI is not configured
+            const demoSuggestions = copyType === 'headline'
+                ? [`Discover ${productName} Today`, `Transform Your Life with ${productName}`, `Unlock ${offer || 'Amazing Savings'}`, `The Smart Choice: ${productName}`, `Experience ${productName} Now`]
+                : copyType === 'cta'
+                    ? ['Shop Now', 'Get Started', 'Learn More', 'Try Free', 'Buy Now']
+                    : [`Experience the power of ${productName}. ${offer || 'Limited time offer available.'}`, `${productName} is designed for your success. Start your journey today.`, `Join thousands who trust ${productName}. See the difference now.`];
+
+            return NextResponse.json({ suggestions: demoSuggestions });
+        }
+
         const result = await geminiFlash.generateContent({
             contents: [{ role: 'user', parts: [{ text: prompt }] }],
             generationConfig: {
